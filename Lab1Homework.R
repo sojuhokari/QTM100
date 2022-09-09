@@ -123,7 +123,7 @@ present$totalBirths <- present$boys + present$girls
 max_births_year <- 0
 max_births_number <- 0
 
-# Loop over all numbers between 1 and the number of observations in the dataset, inclusive
+# Loop over all numbers between 1 and the number of observations in the dataset, inclusive.
 # For each observation in the dataset, if there are more births that year than
 # there were in the current `max_births_number`, update the `max_births_year`
 # and `max_births_number`
