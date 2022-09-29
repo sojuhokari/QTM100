@@ -1,0 +1,244 @@
+################################
+# Authors: Jaleel Sanders, Akonam Agbu, Soju Hokari
+# Document Name: Lab 4 Homework
+# Date: 28 September 2022
+################################
+
+# --------------------------------
+# 1. Import dataset; report summaries for two categorical variables
+# --------------------------------
+
+# The working directory. Change this variable when running on a different computer.
+workingdir <- "~/code/QTM100"
+
+# Set the working directory
+setwd(workingdir)
+
+# Import dataset
+yrbss <- read.csv("datasets/yrbss2013.csv", header = T)
+
+# Turn `carried_weapon` into a factor
+yrbss$carried_weapon_F <- as.factor(yrbss$carried_weapon)
+
+# Summary of `carried_weapon_F`
+summary(yrbss$carried_weapon_F)
+
+# Table with proportions of `carried_weapon_F`
+prop.table(table(yrbss$carried_weapon_F))
+
+# Turn `drive_text` into a factor
+yrbss$drive_text_F <- as.factor(yrbss$drive_text)
+
+# Summary of `drive_text_F`
+summary(yrbss$drive_text_F)
+
+# table with proportions of `drive_text_F`
+prop.table(table(yrbss$drive_text_F))
+
+# a. For `carried_weapon`, 84.44% had not carried a weapon in the past 30 days,
+#    while 15.56% had. For `drive_text`, 38.51% had not texted while driving at all in
+#    the past 30 days, 6.67% had done it 1 or 2 days, 2.94% had done it 3 to 5 days,
+#    1.80% had done it 6 to 9 days, 2.44% had done it 10 to 19 days, 1.83% had done it 20
+#    to 29 days, 4.55% had done it all 30 days, and 41.26% don't drive at all.
+
+# --------------------------------
+# 2. # for loops to get 100, 500, 5000 samples of size 10
+# --------------------------------
+
+# Make an empty matrix with 100 rows and 2 columns for the carried_weapon variable
+sample_100_size_10_carried_weapon <- matrix(rep(NA, 100), nrow=100, ncol=2)
+
+# For loop to populate the matrix
+for(i in 1:100) {
+  
+  # make a sample
+  samp <- sample(yrbss$carried_weapon_F, 10)
+  
+  # turn the sample into a table with proportions, and store the table in the
+  # matrix
+  sample_100_size_10_carried_weapon[i,] <- prop.table(table(samp))
+}
+
+# Find the column means
+colMeans(sample_100_size_10_carried_weapon)
+
+
+# Make an empty matrix with 100 rows and 8 columns for the drive_text variable
+sample_100_size_10_drive_text <- matrix(rep(NA, 100), nrow=100, ncol=8)
+
+# For loop to populate the matrix
+for(i in 1:100) {
+  
+  # make a sample
+  samp <- sample(yrbss$drive_text_F, 10)
+  
+  # turn the sample into a table with proportions, and store the table in the
+  # matrix
+  sample_100_size_10_drive_text[i,] <- prop.table(table(samp))
+}
+
+# Find the column means
+colMeans(sample_100_size_10_drive_text)
+
+# a. The average proportions for this run of 100 samples of size 10 are 0.849
+#    for "no" and 0.151 for "yes" for the carried_weapon variable.
+#    Proportions are 0.368, 0.060, 0.023, 0.017, 0.019, 0.019, 0.057, 0.437 for
+#    "0 days", "1 or 2 days", "10 to 19 days", "20 to 29 days", "3 to 5 days",
+#    "6 to 9 days", "all 30 days", and "not drive", respectively.
+
+
+# Make an empty matrix with 500 rows and 2 columns for the carried_weapon variable
+sample_500_size_10_carried_weapon <- matrix(rep(NA, 500), nrow=500, ncol=2)
+
+# For loop to populate the matrix
+for(i in 1:500) {
+  
+  # make a sample
+  samp <- sample(yrbss$carried_weapon_F, 10)
+  
+  # turn the sample into a table with proportions, and store the table in the
+  # matrix
+  sample_500_size_10_carried_weapon[i,] <- prop.table(table(samp))
+}
+
+# Find the column means
+colMeans(sample_500_size_10_carried_weapon)
+
+
+# Make an empty matrix with 500 rows and 8 columns for the drive_text variable
+sample_500_size_10_drive_text <- matrix(rep(NA, 500), nrow=500, ncol=8)
+
+# For loop to populate the matrix
+for(i in 1:500) {
+  
+  # make a sample
+  samp <- sample(yrbss$drive_text_F, 10)
+  
+  # turn the sample into a table with proportions, and store the table in the
+  # matrix
+  sample_500_size_10_drive_text[i,] <- prop.table(table(samp))
+}
+
+# Find the column means
+colMeans(sample_500_size_10_drive_text)
+
+# b. The average proportions for this run of 500 samples of size 10 are 0.837
+#    for "no" and 0.163 for "yes"
+#    Proportions are 0.4048, 0.0654, 0.0234, 0.0188, 0.0264, 0.0188, 0.0382, 0.4012 for
+#    "0 days", "1 or 2 days", "10 to 19 days", "20 to 29 days", "3 to 5 days",
+#    "6 to 9 days", "all 30 days", and "not drive", respectively.
+
+
+# Make an empty matrix with 5000 rows and 2 columns
+sample_5000_size_10_carried_weapon <- matrix(rep(NA, 5000), nrow=5000, ncol=2)
+
+# For loop to populate the matrix
+for(i in 1:5000) {
+  
+  # make a sample
+  samp <- sample(yrbss$carried_weapon_F, 10)
+  
+  # turn the sample into a table with proportions, and store the table in the
+  # matrix
+  sample_5000_size_10_carried_weapon[i,] <- prop.table(table(samp))
+}
+
+# Find the column means
+colMeans(sample_5000_size_10_carried_weapon)
+
+
+# Make an empty matrix with 5000 rows and 8 columns for the drive_text variable
+sample_5000_size_10_drive_text <- matrix(rep(NA, 5000), nrow=5000, ncol=8)
+
+# For loop to populate the matrix
+for(i in 1:5000) {
+  
+  # make a sample
+  samp <- sample(yrbss$drive_text_F, 10)
+  
+  # turn the sample into a table with proportions, and store the table in the
+  # matrix
+  sample_5000_size_10_drive_text[i,] <- prop.table(table(samp))
+}
+
+# Find the column means
+colMeans(sample_5000_size_10_drive_text)
+
+# c. The average proportions for this run of 5000 samples of size 10 are 0.8451
+#    for "no" and 0.1549 for "yes"
+#    Proportions are 0.38360, 0.06690, 0.02366, 0.01726, 0.02988, 0.01840, 0.04670, 0.41360 for
+#    "0 days", "1 or 2 days", "10 to 19 days", "20 to 29 days", "3 to 5 days",
+#    "6 to 9 days", "all 30 days", and "not drive", respectively.
+
+# d. Increasing the number of samples while keeping the size constant means that
+#    the mean of those samples that were taken gets closer to the population
+#    mean.
+
+
+# --------------------------------
+# 3. for loops to get 5000 samples of size 100, 200, 500
+# --------------------------------
+
+# Doing things differently from question 2 to avoid all of the copy/paste...
+
+# Set up some variables to be used later in the for loops below
+sizes <- c(100, 200, 500) # the sizes we want to test
+variable_names <- c("carried_weapon_F", "drive_text_F") # The two variables we're using
+columns <- c(2, 8) # the number of columns needed for each variable
+
+# For loop to loop over each variable ("carried_weapon_F", "drive_text_F")
+for (i in 1:length(variable_names)) {
+  
+  # For loop to loop over each size (100, 200, 500)
+  for (i2 in 1:length(sizes)) {
+    
+    # Make an empty matrix with 5000 rows and the right number of columns for
+    # the current variable ("carried_weapon_F" or "drive_text_F")
+    current_sample <- matrix(rep(NA, 5000), nrow=5000, ncol=columns[i])
+    
+    # For loop to populate the matrix
+    for(i3 in 1:5000) {
+      
+      # make a sample, using the name of the current variable ("carried_weapon_F"
+      # or "drive_text_F"), as well as the current size (100, 200, or 500)
+      samp <- sample(yrbss[,variable_names[i]], sizes[i2])
+      
+      # turn the sample into a table with proportions, and store the table in the
+      # matrix
+      current_sample[i3,] <- prop.table(table(samp))
+    }
+    
+    # Find the column means
+    col_means <- colMeans(current_sample)
+    
+    # Print info about the size and variable, using the current variable and the
+    # current size
+    print(paste("variable = ", variable_names[i], ", size = ", sizes[i2]))
+    print(paste("column_means:"))
+    print(col_means)
+    print("")
+  }
+}
+
+# use the printed info to answer the following questions:
+
+# a. The average proportions for this run of 5000 samples of size 100 are 0.84357
+#    for "no" and 0.15643 for "yes" for the carried_weapon variable.
+#    Proportions are 0.385, 0.067, 0.024, 0.018, 0.030, 0.018, 0.046, 0.412 for
+#    "0 days", "1 or 2 days", "10 to 19 days", "20 to 29 days", "3 to 5 days",
+#    "6 to 9 days", "all 30 days", and "not drive", respectively.
+
+# b. The average proportions for this run of 5000 samples of size 200 are 0.8444
+#    for "no" and 0.1556 for "yes" for the carried_weapon variable.
+#    Proportions are 0.3885, 0.067, 0.024, 0.019, 0.029, 0.018, 0.046, 0.413 for
+#    "0 days", "1 or 2 days", "10 to 19 days", "20 to 29 days", "3 to 5 days",
+#    "6 to 9 days", "all 30 days", and "not drive", respectively.
+
+# c. The average proportions for this run of 5000 samples of size 500 are 0.8442
+#    for "no" and 0.1558 for "yes" for the carried_weapon variable.
+#    Proportions are 0.385, 0.067, 0.024, 0.018, 0.029, 0.018, 0.045, 0.413 for
+#    "0 days", "1 or 2 days", "10 to 19 days", "20 to 29 days", "3 to 5 days",
+#    "6 to 9 days", "all 30 days", and "not drive", respectively.
+
+# d. As the size of each draw increases while the number of samples is high and
+#    constant, the mean of the draws also tends towards the population mean.
