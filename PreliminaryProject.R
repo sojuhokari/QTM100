@@ -86,6 +86,12 @@ addmargins(table(NSYR$attreg2, useNA = "ifany"))
 # --------------------------------
 
 # HYPOTHESIS
+# Null: There is no correlation between living situation and religious service
+#       attendance. The two variables are independent.
+
+# Alternative: There is a correlation between living situation and religious
+#              service attendance. The two variables are dependent.
+
 # The more stable the living situation, the more likely a person is to regularly
 # attend religious services. Our guess is that homeless < another person's home
 # < group quarters < your parent's home < your own place
@@ -131,6 +137,9 @@ barplot(
 # Table of observed values:
 addmargins(table(NSYR$currlive2, NSYR$attreg2))
 
+# Table with proportions
+addmargins(prop.table(table(NSYR$currlive2, NSYR$attreg2), margin=1))
+
 # Perform the chi-square test:
 chisq.test(NSYR$currlive2, NSYR$attreg2, correct=F)
 # According to R, X-squared = 12.96, df = 4, p-value = 0.01147
@@ -160,13 +169,17 @@ fisher.test(NSYR$currlive2, NSYR$attreg2)
 # --------------------------------
 
 # Finally, we perform a 2-sample z test. In order to do so, we dichotomize our
-# explanatory variable into "Own place" and "Living with others":
+# explanatory variable into "Stable" and "Unstable":
 NSYR$currlive_dichotomized <- NA
-NSYR$currlive_dichotomized[NSYR$currlive2 == "Own place"] <- "Own place"
+NSYR$currlive_dichotomized[
+  NSYR$currlive2 == "Own place"
+  | NSYR$currlive2 == "Parent's home"
+] <- "Stable"
 NSYR$currlive_dichotomized[
   NSYR$currlive2 != "Own place" 
+  & NSYR$currlive2 != "Parent's home" 
   & !is.na(NSYR$currlive2)
-] <- "Living with others"
+] <- "Unstable"
 
 # Check to make sure the new variable creation worked
 addmargins(table(NSYR$currlive_dichotomized, useNA = "ifany"))
@@ -186,14 +199,9 @@ addmargins(prop.table(attends_living_table, margin=1))
 
 # Finally, we run the test:
 prop.test(attends_living_table, correct=F)
-# x-squared: 3.5368, df = 1, p-value = 0.06002
+# x-squared: 4.7292, df = 1, p-value = 0.02965
 #
-# In this case,the p-value is higher than 0.05, indicating that we fail to
-# reject the null hypothesis at a significance level of 5%.
-#
-# While we were able to prove that our two variables were linked in the chi-
-# square analysis above, once dichotomized, the two variables can no longer be
-# proven to not be independent. In other words, the difference between the two
-# variables could be explained by random chance at a 5% significance level.
+# In this case,the p-value is lower than 0.05, indicating that we can reject the
+# null hypothesis at a significance level of 5%.
 
 
