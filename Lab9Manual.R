@@ -1,6 +1,6 @@
 ################################
 # Author: Soju Hokari
-# Document Name: Lab 8 Manual -- Inference for Related Samples and Errors in
+# Document Name: Lab 9 Manual -- Inference for Related Samples and Errors in
 #                                Inference
 # Date: 11 November 2022
 ################################

@@ -87,7 +87,7 @@ plot.ci(results = sim1, true.val = 1.687)
 # 2. Explore inferential results when we repeatedly sample from days smoke
 # --------------------------------
 
-# Examine population distribution of height_m
+# Examine population distribution of days_smoke
 hist(yrbss$days_smoke)
 
 # mean
