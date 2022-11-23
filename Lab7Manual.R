@@ -74,7 +74,7 @@ prop.test(Age_Completion_Table2, correct=F)
 # To calculate by hand, z=sqrt(X^2) = sqrt(2.62) = 1.62
 
 # --------------------------------
-# Chi-Squre Test
+# Chi-Square Test
 # --------------------------------
 
 # For when we have more than two groups and cannot therefore use a proportion test
