@@ -48,8 +48,25 @@ NSYR <- read.csv("datasets/NSYR_data.csv", header = T)
 
 # --------------------------------
 # Research Quesion 2:
-#     TODO
+#     Does experiencing a traumatic event influence Body Mass Index?
 # --------------------------------
+
+# RATIONALE: Body mass index and whether someone has experienced a traumatic
+#            event in the last few years could be related, as experiencing a
+#            traumatic event is known to influence eating in youth (Smyth et.
+#            al. 2007), and PTSD is known to result in BMI increase in women
+#            (Kubzansky et. al. 2014).
+
+# HYPOTHESIS
+#     Null: There is no correlation between suffering a traumatic life event in
+#           the last two years and Body Mass Index.
+#     Alternative: There is a correlation.
+#
+# RATIONALE: see above. Body Mass Index could be related to traumatic life
+#            events. While we do not know what the association might be, we
+#            might guess that traumatic life events result in higher BMI, as
+#            PTSD in women has been shown to result in BMI increases in women
+#            (Kubzansky et. al. 2014).
 
 # --------------------------------
 # Research Quesion 3:
@@ -94,6 +111,21 @@ NSYR <- read.csv("datasets/NSYR_data.csv", header = T)
 #         "Yes"
 #         "No"
 #
+# trauma (Traumatic life events)
+#   - dichotomous categorical
+#   - "In the past two years have you suffered any traumatic life events – such
+#      as someone you were close to dying or you or someone you were close to
+#      having a serious accident or illness?"
+#   - two levels are:
+#         "Yes"
+#         "No"
+#
+# bmi (Body Mass Index)
+#   - continuous numerical
+#   - "Body Mass Index (NIH calculation) (BMI)"
+#
+#
+#
 # TODO: ADD THE REST OF THE VARIABLES
 
 # --------------------------------
@@ -137,6 +169,23 @@ NSYR$attreg2[NSYR$attreg == "No"] <- "No"
 # Looking at the table of the new variable, the recoding worked again!
 addmargins(table(NSYR$attreg2, useNA = "ifany"))
 
+# TRAUMA
+# `trauma` has three missing values, so we will recode `trauma` into a new
+# factored variable, `trauma2`
+NSYR$trauma2 <- factor(NA, levels=c("Yes", "No"))
+NSYR$trauma2[NSYR$trauma == "Yes"] <- "Yes"
+NSYR$trauma2[NSYR$trauma == "No"] <- "No"
+
+# Make sure the recoding worked
+addmargins(table(NSYR$trauma2, useNA = "ifany"))
+
+# BMI
+# `bmi` is a character variable, so we will recode it to be numeric:
+NSYR$bmi2 <- as.numeric(NSYR$bmi)
+
+# We end up with one `NA`, which is ok. We will just have to deal with that NA
+# whenever we use the variable using `na.rm = T`
+
 # TODO: Recode all other variables used
 
 # --------------------------------
@@ -146,7 +195,10 @@ addmargins(table(NSYR$attreg2, useNA = "ifany"))
 # Question 1:
 #     We used a chi-square test, and then 6 pairwise tests
 
-# TODO: Questions 2-4
+# Question 2:
+#     We used a two-sample T-test.
+
+# TODO: Questions 3 and 4
 
 # --------------------------------
 # Results: Research Question 1
@@ -205,7 +257,46 @@ pairwise.prop.test(table(NSYR$currlive2, NSYR$attreg2))
 # --------------------------------
 # Results: Research Question 2
 # --------------------------------
-# TODO
+
+# PLOT
+# We plot the association between the variable by using a side-by-side boxplot
+boxplot(
+  NSYR$bmi2 ~ NSYR$trauma2,
+  main = "Body Mass Index and traumatic life events",
+  xlab="Have you experienced a traumatic life event in the past two years?",
+  ylab="Body Mass Index (BMI)",
+  na.rm = T
+)
+
+# The data in the plots looks roughly normally distributed, with some outliers
+# on the high end. The variance is also roughly the same.
+
+# TWO-SAMPLE T-TEST
+# The data satisfies the necessary assumptions:
+# 1. independence of samples and observations
+# 2. data is roughly normal
+# 3. the variance is roughly the same for the two variables
+
+# Table of mean BMI:
+tapply(X = NSYR$bmi2, INDEX = NSYR$trauma2, FUN = mean, na.rm = T)
+
+# Make two new variables containing the two sets of data
+trauma_yes <- NSYR$bmi2[NSYR$trauma2 == "Yes"]
+trauma_no <- NSYR$bmi2[NSYR$trauma2 == "No"]
+
+# To ensure 
+
+# Perform the two-sample T-test
+t.test(trauma_yes, trauma_no, var.equal=T)
+# According to R, t = 1.6447, df = 2450, and p-value = 0.1002.
+
+# SUMMARY OF RESULTS
+# We fail to reject the null hypothesis based on this data at a significance
+# level of 0.05. The p-value (0.1002) is higher than 0.05, indicating that the
+# difference in means for body mass index across the two groups could be natural
+# variation between samples. We therefore fail to show a connection between
+# traumatic life events over the past two years and body mass index of youth
+# in this study.
 
 # --------------------------------
 # Results: Research Question 3
@@ -230,4 +321,11 @@ pairwise.prop.test(table(NSYR$currlive2, NSYR$attreg2))
 # Frederick, Tyler J., Michal Chwalek, Jean Hughes, Jeff Karabanow, and Sean
 #     Kidd. 2014. “How Stable is Stable? Defining and Measuring Housing
 #     Stability.” Journal of Community Psychology 42 (8): 964-979.
+# Smyth, Joshua M., Kristin E. Heron, Stephen A. Wonderlich, Ross D. Crosby, and
+#     Kevin M. Thompson. 2008. "The Influence of Reported Trauma and Adverse
+#     Events on Eating Disturbance in Young Adults." International Journal of
+#     Eating Disorders 41 (3): 195-202.
+# Kubzansky, Laura D., Paula Bordelois, Hee Jin Jun, et. al. 2014. "The Weight
+#     of Traumatic Stress: A Prospective Study of Posttraumatic Stress Disorder
+#     Symptoms and Weight Status in Women." JAMA Psychiatry 71 (1):44-51.
 
