@@ -344,6 +344,9 @@ summary(m1)
 # The p-value for the slope is 0.0108, which is significant at the 0.05 level,
 # indicating that the slope is significantly different from zero.
 
+# Extract the confidence intervals
+confint(m1)
+
 # Plot the linear regression line on to the plot we already have
 abline(m1)
 
