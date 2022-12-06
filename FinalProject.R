@@ -299,6 +299,7 @@ boxplot(
 
 # View a table 
 tapply(X = NSYR$WORK, INDEX = NSYR$currlive2, FUN = mean, na.rm = T)
+tapply(X = NSYR$WORK, INDEX = NSYR$currlive2, FUN = median, na.rm = T)
 
 # ANOVA Analysis
 anova.currlive.workhrs <- aov(NSYR$WORK ~ NSYR$currlive2)
