@@ -22,61 +22,10 @@ setwd(workingdir)
 NSYR <- read.csv("datasets/NSYR_data.csv", header = T)
 
 # --------------------------------
-# Research Quesion 1:
-#     Does one’s living situation determine how often they attend religious
-#     services? 
+# Research Questions
 # --------------------------------
 
-# RATIONALE: One's living situation could determine attendance at religious
-#            services in numerous ways: the more stable a living situation, the
-#            more likely one is to have adequate transportation, a stable
-#            schedule, and routines to make it easier to attend religious
-#            services.
-
-# HYPOTHESIS
-#     Null: There is no correlation between living situation and religious
-#           service attendance. The two variables are independent.
-#     Alternative: There is a correlation between living situation and religious
-#                  service attendance. The two variables are dependent
-# RATIONALE: Religious services require some amount of stability in life. When
-#            someone is homeless, living in another person's home, or in group
-#            quarters, they may not have the ability to find transportation to
-#            services, or may need to spend that time on other things.
-#            Conversely, if one is living at their own place or at their
-#            parent's home, they are more likely to have transportation and time
-#            to be able to go to religious services.
-
-# --------------------------------
-# Research Quesion 2:
-#     Does experiencing a traumatic event influence Body Mass Index?
-# --------------------------------
-
-# RATIONALE: Body mass index and whether someone has experienced a traumatic
-#            event in the last few years could be related, as experiencing a
-#            traumatic event is known to influence eating in youth (Smyth et.
-#            al. 2007), and PTSD is known to result in BMI increase in women
-#            (Kubzansky et. al. 2014).
-
-# HYPOTHESIS
-#     Null: There is no correlation between suffering a traumatic life event in
-#           the last two years and Body Mass Index.
-#     Alternative: There is a correlation.
-#
-# RATIONALE: see above. Body Mass Index could be related to traumatic life
-#            events. While we do not know what the association might be, we
-#            might guess that traumatic life events result in higher BMI, as
-#            PTSD in women has been shown to result in BMI increases in women
-#            (Kubzansky et. al. 2014).
-
-# --------------------------------
-# Research Quesion 3:
-#     TODO
-# --------------------------------
-
-# --------------------------------
-# Research Quesion 4:
-#     TODO
-# --------------------------------
+# SEE SLIDESHOW
 
 # --------------------------------
 # Methods: Dataset and Variables
@@ -124,9 +73,9 @@ NSYR <- read.csv("datasets/NSYR_data.csv", header = T)
 #   - continuous numerical
 #   - "Body Mass Index (NIH calculation) (BMI)"
 #
-#
-#
-# TODO: ADD THE REST OF THE VARIABLES
+# workhrs (Work hours per week)
+#   - continuous numerical
+#   - "How many hours in a typical week are you currently working for pay?"
 
 # --------------------------------
 # Recoding Procedures
@@ -186,19 +135,28 @@ NSYR$bmi2 <- as.numeric(NSYR$bmi)
 # We end up with one `NA`, which is ok. We will just have to deal with that NA
 # whenever we use the variable using `na.rm = T`
 
-# TODO: Recode all other variables used
+# WORKHRS1
+# Since NSYR$WORKHRS1 is originally a character variable, we are going to
+# re-code it into a numerical variable that can be used for ANOVA analysis
+NSYR$WORK <- as.numeric(NSYR$WORKHRS1)
+
+# See above with respect to the `NA` warning that R gives us.
 
 # --------------------------------
 # Methods: Statistical Tests
 # --------------------------------
 
 # Question 1:
-#     We used a chi-square test, and then 6 pairwise tests
+#     We used a chi-square test, and then 6 pairwise z-tests
 
 # Question 2:
 #     We used a two-sample T-test.
 
-# TODO: Questions 3 and 4
+# Question 3:
+#     We used ANOVA
+
+# Question 4:
+#     We performed a linear regression.
 
 # --------------------------------
 # Results: Research Question 1
@@ -216,6 +174,16 @@ barplot(
   ),
   ylab="Attends Religious Services Regularly (%)"
 )
+
+# OPTIONAL -- ORDER BY PROPORTION
+# Run the following code, and then plot again in order to order the blocks in
+# order of the proportion
+    NSYR$currlive2 <- factor(NSYR$currlive2, levels=c(
+      "Group quarters",
+      "Parent's home",
+      "Own place",
+      "Another person or homeless"
+    ))
 
 # CHI SQUARE ANALYSIS
 # Table of observed values:
@@ -271,6 +239,12 @@ boxplot(
 # The data in the plots looks roughly normally distributed, with some outliers
 # on the high end. The variance is also roughly the same.
 
+# Find the total number of valid observations
+length(NSYR$trauma2[
+  !is.na(NSYR$trauma2)
+  & !is.na(NSYR$bmi2)
+])
+
 # TWO-SAMPLE T-TEST
 # The data satisfies the necessary assumptions:
 # 1. independence of samples and observations
@@ -280,11 +254,12 @@ boxplot(
 # Table of mean BMI:
 tapply(X = NSYR$bmi2, INDEX = NSYR$trauma2, FUN = mean, na.rm = T)
 
+# Table of standard deviation of BMI:
+tapply(X = NSYR$bmi2, INDEX = NSYR$trauma2, FUN = sd, na.rm = T)
+
 # Make two new variables containing the two sets of data
 trauma_yes <- NSYR$bmi2[NSYR$trauma2 == "Yes"]
 trauma_no <- NSYR$bmi2[NSYR$trauma2 == "No"]
-
-# To ensure 
 
 # Perform the two-sample T-test
 t.test(trauma_yes, trauma_no, var.equal=T)
@@ -301,31 +276,111 @@ t.test(trauma_yes, trauma_no, var.equal=T)
 # --------------------------------
 # Results: Research Question 3
 # --------------------------------
-# TODO
+
+# PLOT
+# To establish a visual of the relationship between our variables, we are using
+# a side-by-side box plot
+boxplot(
+  NSYR$WORK~NSYR$currlive2,
+  main= "The relationship between Work Hours and Living Situations",
+  xlab= "Living Situation",
+  ylab= "Work Hours"
+)
+
+# OPTIONAL -- ORDER BY PROPORTION
+# Run the following code, and then plot again in order to order the blocks in
+# order of the proportion
+    NSYR$currlive2 <- factor(NSYR$currlive2, levels=c(
+      "Group quarters",
+      "Parent's home",
+      "Another person or homeless",
+      "Own place"
+    ))
+
+# View a table 
+tapply(X = NSYR$WORK, INDEX = NSYR$currlive2, FUN = mean, na.rm = T)
+
+# ANOVA Analysis
+anova.currlive.workhrs <- aov(NSYR$WORK ~ NSYR$currlive2)
+summary(anova.currlive.workhrs)
+# With 3 degrees of freedom and a p-value of 0.00000000000000022, we reject the
+# null hypothesis and accept the alternative hypothesis
+
+# To make pairwise comparisons in our data set for ANOVA and see if there is
+# significance in the difference of means, we will be using a Tukey HSD test and
+# then we will use the plot function to present a visual of all the 95%
+# confidence intervals in our data.
+TukeyHSD(anova.currlive.workhrs)
+plot(TukeyHSD(anova.currlive.workhrs))
 
 # --------------------------------
 # Results: Research Question 4
 # --------------------------------
-# TODO
+
+# PLOT
+# Plot the two variables against each other in a scatterplot
+plot(
+  x = NSYR$WORK,
+  y = NSYR$bmi2,
+  main = "Work Hours vs. BMI",
+  xlab= "Work Hours",
+  ylab= "BMI"
+)
+
+# Test the correlation between the two variables
+cor.test(NSYR$WORK, NSYR$bmi2)
+# The p-value is 0.01076, which means that the correlation is significantly
+# different from zero at the 0.05 confidence level. The estimate for the
+# correlation is 0.05147771.
+
+# LINEAR REGRESSION
+m1<-lm(NSYR$bmi2 ~ NSYR$WORK)
+
+# View a summary of the linear model
+summary(m1)
+# The least squares regression is estimated to be
+# y_hat = 24.442280 + 0.013844work_hours
+
+# The p-value for the slope is 0.0108, which is significant at the 0.05 level,
+# indicating that the slope is significantly different from zero.
+
+# Plot the linear regression line on to the plot we already have
+abline(m1)
+
+# TEST FOR CONDITIONS
+
+# Plot a histogram of the residuals of the linear regression
+hist(rstandard(m1)) 
+
+# Plot a q-q plot in order to test for normality
+qqnorm(rstandard(m1))
+qqline(rstandard(m1))
+# Data is close enough to normal
+
+# Plot fitted values against standardized residuals in order to test for
+# constant variance
+plot(
+  predict(m1),
+  rstandard(m1),
+  main = "Fitted values vs. Standardized residuals",
+  xlab= "Fitted Values",
+  ylab= "Standardized Residuals"
+)
+
+# Add line to the plot above
+abline(h = 0, lty = 2)
+
+# Variance seems to generally be relatively constant.
+# Our linear regression is therefore valid.
 
 # --------------------------------
 # Discussion
 # --------------------------------
 
-# TODO
+# SEE SLIDESHOW
 
 # --------------------------------
 # References
 # --------------------------------
 
-# Frederick, Tyler J., Michal Chwalek, Jean Hughes, Jeff Karabanow, and Sean
-#     Kidd. 2014. “How Stable is Stable? Defining and Measuring Housing
-#     Stability.” Journal of Community Psychology 42 (8): 964-979.
-# Smyth, Joshua M., Kristin E. Heron, Stephen A. Wonderlich, Ross D. Crosby, and
-#     Kevin M. Thompson. 2008. "The Influence of Reported Trauma and Adverse
-#     Events on Eating Disturbance in Young Adults." International Journal of
-#     Eating Disorders 41 (3): 195-202.
-# Kubzansky, Laura D., Paula Bordelois, Hee Jin Jun, et. al. 2014. "The Weight
-#     of Traumatic Stress: A Prospective Study of Posttraumatic Stress Disorder
-#     Symptoms and Weight Status in Women." JAMA Psychiatry 71 (1):44-51.
-
+# SEE SLIDESHOW
